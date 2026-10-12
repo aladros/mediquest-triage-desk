@@ -7,6 +7,7 @@ so a proposed priority can always answer the audit question "why this colour?".
 from __future__ import annotations
 
 import re
+from difflib import SequenceMatcher
 from functools import cache
 from importlib import resources
 from typing import Any
@@ -109,8 +110,10 @@ def check_discriminators(complaint: str, candidates: list[dict[str, Any]]) -> di
         elif not quote:
             rejected.append({"id": did, "quote": quote, "reason": "no supporting quote given"})
         elif _normalise(quote) not in haystack:
+            closest = closest_span(complaint, quote)
+            hint = f' — closest words in the complaint: "{closest}"' if closest else ""
             rejected.append({"id": did, "quote": quote,
-                             "reason": "quote does not appear verbatim in the presenting complaint"})
+                             "reason": f"quote does not appear verbatim in the presenting complaint{hint}"})
         elif did in seen:
             continue
         else:
@@ -118,6 +121,22 @@ def check_discriminators(complaint: str, candidates: list[dict[str, Any]]) -> di
             d = index[did]
             accepted.append({"id": did, "quote": quote, "colour": d["colour"], "label": d["label"], "cite": did})
     return {"accepted": accepted, "rejected": rejected}
+
+
+def closest_span(complaint: str, quote: str, threshold: float = 0.6) -> str | None:
+    """The run of complaint words most similar to a rejected quote, so the model can resubmit the patient's own words.
+    Only a hint: whatever comes back is still checked verbatim."""
+    words = complaint.split()
+    n = len(quote.split())
+    target = _normalise(quote)
+    best, best_ratio = None, threshold
+    for size in range(max(1, n - 1), n + 3):
+        for i in range(0, max(0, len(words) - size) + 1):
+            span = " ".join(words[i:i + size]).strip(" .,;:!?")
+            ratio = SequenceMatcher(None, _normalise(span), target).ratio()
+            if ratio > best_ratio:
+                best, best_ratio = span, ratio
+    return best
 
 
 def combine(tews: dict[str, Any], accepted: list[dict[str, Any]]) -> dict[str, Any]:

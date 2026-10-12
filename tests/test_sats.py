@@ -64,3 +64,10 @@ def test_incomplete_vitals_no_colour_unless_orange_or_red():
     red = sats.check_discriminators("seizure now", [{"id": "em.seizure_current", "quote": "seizure now"}])
     out = sats.combine(t, red["accepted"])
     assert out["status"] == "proposed_vitals_incomplete" and out["colour"] == "red"
+
+
+def test_rejection_points_at_the_patients_own_words():
+    r = sats.check_discriminators("Vomited fresh blood twice this morning, feels weak.",
+                                  [{"id": "vu.vomit_blood", "quote": "vomiting fresh blood"}])
+    assert not r["accepted"]
+    assert 'closest words in the complaint: "Vomited fresh blood' in r["rejected"][0]["reason"]

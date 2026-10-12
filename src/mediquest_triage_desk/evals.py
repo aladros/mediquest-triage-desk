@@ -17,7 +17,7 @@ from typing import Any
 
 import yaml
 
-from .agent import MODEL
+from .agent import MODEL, TEMPERATURE
 
 
 async def run_evals(args) -> None:
@@ -56,7 +56,7 @@ async def run_evals(args) -> None:
                             "colours": sorted({str(r["colour"]) for r in runs}),
                             "median_seconds": statistics.median(r["seconds"] for r in runs), "runs": runs})
 
-    out = {"model": MODEL, "runs_per_case": args.runs, "started": stamp,
+    out = {"model": MODEL, "temperature": TEMPERATURE, "runs_per_case": args.runs, "started": stamp,
            "passed": sum(r["pass"] for r in results), "total": len(results), "cases": results}
     Path(args.out).parent.mkdir(parents=True, exist_ok=True)
     Path(args.out).write_text(json.dumps(out, indent=2, ensure_ascii=False))

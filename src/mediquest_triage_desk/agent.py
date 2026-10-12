@@ -33,6 +33,7 @@ from . import store
 FACILITY_TZ = os.environ.get("TRIAGE_FACILITY_TZ", "Africa/Nairobi")
 MODEL = os.environ.get("TRIAGE_MODEL", "qwen2.5:3b")
 OLLAMA_URL = os.environ.get("OLLAMA_HOST", "http://127.0.0.1:11434")
+TEMPERATURE = float(os.environ.get("TRIAGE_TEMPERATURE", "0"))
 MAX_EXTRACT_TURNS = 3
 
 
@@ -118,6 +119,9 @@ Rules:
 - Use only ids from this list:
 {discriminators}
 - For each one, `quote` must be words copied EXACTLY from the complaint (a short phrase, not a paraphrase).
+  Use the patient's own wording, not the chart label (e.g. "coughed up blood", not "Coughing blood").
+- The complaint may be written in Kiswahili or another language. Match its meaning to the chart, but quote the
+  original-language words exactly as written.
 - Only pick what the complaint actually states. Do not infer conditions, do not diagnose, do not guess severity.
   Pain counts as "severe" or "moderate" only if the complaint says so or gives a pain score (severe: 8-10, moderate: 5-7).
 - Vitals are scored separately by a calculator; do not use them to pick discriminators.
@@ -127,7 +131,7 @@ Rules:
 
 
 def build_graph(hub: MCPHub, llm: Any | None = None, checkpointer: Any | None = None):
-    llm = llm or ChatOllama(model=MODEL, base_url=OLLAMA_URL, temperature=0, num_ctx=8192)
+    llm = llm or ChatOllama(model=MODEL, base_url=OLLAMA_URL, temperature=TEMPERATURE, num_ctx=8192)
 
     async def intake(state: TriageState) -> TriageState:
         return {"extract_turns": 0, "candidates": []}
