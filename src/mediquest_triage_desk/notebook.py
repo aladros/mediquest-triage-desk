@@ -11,6 +11,7 @@ is its own cell, so the pause is visible: the graph stops at the gate and nothin
 
 from __future__ import annotations
 
+import asyncio
 import uuid
 from typing import Any
 
@@ -26,14 +27,36 @@ class TriageDesk:
         self.graph = build_graph(hub)
         self.pending: dict[str, Any] | None = None
 
+    _current: "TriageDesk | None" = None
+
     @classmethod
     async def open(cls) -> "TriageDesk":
-        hub = await MCPHub(on_call=print_call).__aenter__()
+        # The MCP stdio connections are anyio contexts: they must be opened and closed in the SAME task. Notebook cells
+        # run as separate tasks, so one long-lived task owns the hub and the cells only send requests through it.
+        if cls._current is not None:
+            await cls._current.close()
+        ready: asyncio.Future = asyncio.get_running_loop().create_future()
+        stop = asyncio.Event()
+
+        async def own_hub() -> None:
+            try:
+                async with MCPHub(on_call=print_call) as hub:
+                    ready.set_result(hub)
+                    await stop.wait()
+            except Exception as exc:  # surface start-up failures to the cell that asked
+                if not ready.done():
+                    ready.set_exception(exc)
+
+        owner = asyncio.create_task(own_hub())
+        hub = await ready
+        desk = cls(hub)
+        desk._stop, desk._owner = stop, owner
+        cls._current = desk
         tools = {name: [t.name for t in (await s.list_tools()).tools] for name, s in hub.sessions.items()}
         print(f"model={MODEL} (open-weights, Ollama)  facility tz={FACILITY_TZ}")
         for name, names in tools.items():
             print(f"MCP server {name}: {', '.join(names)}")
-        return cls(hub)
+        return desk
 
     async def triage(self, patient: dict[str, Any]) -> None:
         if self.pending:
@@ -93,4 +116,7 @@ class TriageDesk:
         print_queue(await self.hub.call("triage-desk", "get_queue", {}, caller="agent"))
 
     async def close(self) -> None:
-        await self.hub.__aexit__(None, None, None)
+        self._stop.set()
+        await self._owner
+        if TriageDesk._current is self:
+            TriageDesk._current = None
