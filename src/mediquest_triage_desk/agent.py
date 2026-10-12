@@ -31,7 +31,7 @@ from mcp.client.stdio import stdio_client
 from . import store
 
 FACILITY_TZ = os.environ.get("TRIAGE_FACILITY_TZ", "Africa/Nairobi")
-MODEL = os.environ.get("TRIAGE_MODEL", "qwen2.5:3b")
+MODEL = os.environ.get("TRIAGE_MODEL", "qwen2.5:7b")
 OLLAMA_URL = os.environ.get("OLLAMA_HOST", "http://127.0.0.1:11434")
 TEMPERATURE = float(os.environ.get("TRIAGE_TEMPERATURE", "0"))
 MAX_EXTRACT_TURNS = 3

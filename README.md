@@ -15,7 +15,7 @@ Prerequisites: [uv](https://docs.astral.sh/uv/) and [Ollama](https://ollama.com/
 ./run.sh
 ```
 
-That starts Ollama if needed, pulls the open-weights model (`qwen2.5:3b`, ~2 GB, first run only), and runs the demo:
+That starts Ollama if needed, pulls the open-weights model (`qwen2.5:7b`, ~4.7 GB, first run only), and runs the demo:
 six synthetic patients from a morning outpatient queue. **You are the nurse at the gate** — type your name, then
 confirm / override / reject each proposal. Every MCP tool call prints on screen as it happens.
 
@@ -26,7 +26,12 @@ confirm / override / reject each proposal. Every MCP tool call prints on screen 
 uv run pytest             # deterministic scorer tests (no model needed)
 ```
 
-Swap the model with `TRIAGE_MODEL=qwen2.5:7b ./run.sh` (any Ollama model with tool calling).
+Swap the model with `TRIAGE_MODEL=qwen2.5:3b ./run.sh` (any Ollama model with tool calling). A GPU makes it seconds per
+patient; CPU-only works but is slow.
+
+**No GPU? Run it on Kaggle.** [`kaggle/demo.ipynb`](kaggle/demo.ipynb) is the same agent as a notebook — open it in
+Kaggle with GPU T4 + Internet on and *Run All*. The nurse's decision is its own cell, so the pause at the gate is
+visible. `kaggle/push.sh` runs the full eval set on a Kaggle GPU and is how EVALS.md was produced.
 Audit log: `var/audit.jsonl`. State: `var/triage.db`. Delete `var/` to start a fresh morning.
 
 ## What it does
@@ -35,8 +40,9 @@ Audit log: `var/audit.jsonl`. State: `var/triage.db`. Delete `var/` to start a f
    Triage Early Warning Score. Each point cites its chart row (`hr.111-129 -> 2`). Missing vitals are reported, never
    assumed normal.
 2. **Read the complaint** — the local model calls `match_discriminators` with SATS discriminator ids and the exact
-   words that support each. The server rejects anything off the chart or not word-for-word in the complaint, and the
-   model retries. This is the only step a model does.
+   words that support each. The server rejects anything off the chart or not word-for-word in the complaint, points to
+   the closest real words, and the model retries. This is the only step a model does. Anything it raised but could not
+   cite goes to the nurse as UNVERIFIED — never into the colour, never silently dropped.
 3. **Propose** — `propose_priority` re-checks everything server-side and takes the higher of the TEWS colour and the
    discriminator colour (the SATS rule), with a target time (red now, orange 10 min, yellow 60 min, green 4 h).
    It writes a *pending* proposal.
@@ -54,7 +60,7 @@ It refuses to apply the adult chart to children under 13 and hands them to the n
 | Own MCP server, ≥3 tools, ≥1 that acts | `src/mediquest_triage_desk/server.py` — 7 tools; `propose_priority`, `flag_recheck`, `commit_priority` act |
 | One MCP server we didn't write | `mcp-server-time` (modelcontextprotocol/servers) — facility-local clock for see-by deadlines; tz correctness maintained upstream beats owning it in a clinical log |
 | Open-source orchestration | LangGraph — `src/mediquest_triage_desk/agent.py` |
-| Full task on an open-weights model | Qwen 2.5 via Ollama, on the device; no patient text leaves the machine |
+| Full task on an open-weights model | Qwen 2.5 7B via Ollama on the facility's own machine; no patient text leaves it. Our runs: Kaggle T4, synthetic data only |
 | Logged tool calls + gate on irreversible actions | `var/audit.jsonl` (every call: caller, inputs, output, timestamp, latency); `interrupt()` gate with named nurse before any colour reaches the queue |
 | ARCHITECTURE.md / EVALS.md | in this repo |
 
@@ -69,9 +75,10 @@ discriminator has an id; every proposed colour cites the ids it came from.
 - **The chart was transcribed by hand** and has not been checked line-by-line against the official EMSSA poster. Any
   facility would need to verify every band in `sats_adult.yaml` first.
 - **Paediatric SATS is not implemented** (children are handed to the nurse).
-- **Negation and injected text** can fool the quote check — see the unfixed failure in EVALS.md.
+- **Kiswahili complaints are missed** by the 7B model (unfixed — see EVALS.md), and a verbatim quote can still be
+  irrelevant to the discriminator it is attached to; the nurse reading the citation is the check.
 - **Not yet reviewed by a triage nurse.** The workflow is modelled on the published SATS process, not on time spent at
-  a desk.
+  a desk. <!-- NURSE-INPUT: replace this bullet with a 'Clinical input' section once Peter has spoken to a triage nurse. -->
 - Single desk, single machine; no EMR integration, no auth on the CLI (the name typed is the name recorded).
 - Discriminators that depend on a measurement (glucose, burn %) rely on the nurse writing the number in the complaint.
 

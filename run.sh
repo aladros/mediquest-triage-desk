@@ -6,7 +6,7 @@
 set -euo pipefail
 cd "$(dirname "$0")"
 
-MODEL="${TRIAGE_MODEL:-qwen2.5:3b}"
+MODEL="${TRIAGE_MODEL:-qwen2.5:7b}"
 
 command -v uv >/dev/null || { echo "Install uv first: curl -LsSf https://astral.sh/uv/install.sh | sh"; exit 1; }
 command -v ollama >/dev/null || { echo "Install Ollama first: https://ollama.com/download"; exit 1; }

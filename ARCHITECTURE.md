@@ -32,11 +32,15 @@ A fixed plan with one model-driven loop, on purpose. Triage is a protocol, not a
 steps (vitals → discriminators → combine → nurse) is the SATS method itself, so the graph encodes it. What can't be
 encoded is reading a free-text complaint, and that is the only thing the model does.
 
-- **Model:** open-weights `qwen2.5:3b` via Ollama, on the triage-desk machine. No patient text leaves the device.
-  Any Ollama model can be swapped in with `TRIAGE_MODEL`.
+- **Model:** open-weights `qwen2.5:7b` via Ollama, on the facility's own machine — no patient text leaves it. Any
+  Ollama model can be swapped in with `TRIAGE_MODEL` (EVALS.md compares 7B and 3B). Our own eval and demo runs use a
+  Kaggle T4 GPU with synthetic patients only.
 - **Model's one job:** call `match_discriminators` with SATS discriminator ids and the exact complaint words that
   support each. The server rejects any id not on the chart and any quote that isn't word-for-word in the complaint, and
-  says why. The model reads the rejection and retries (up to 3 turns). This recovery loop is the agent's self-check.
+  says why — pointing at the closest real words in the complaint. The model reads the rejection and retries (up to 3
+  turns). This recovery loop is the agent's self-check.
+- **Nothing is dropped silently.** A discriminator the model raised but never managed to cite is passed to the nurse
+  as UNVERIFIED ("check with the patient"). It cannot set the colour — it has no source — but she sees it.
 - **The colour is never the model's.** `propose_priority` re-scores TEWS and re-validates every quote server-side, then
   takes the higher of the TEWS colour and the discriminator colour (the SATS rule). A model that skips or fakes a step
   cannot get an unsourced colour written down: it simply contributes nothing.
@@ -71,5 +75,5 @@ and not a prompt asking the model to wait.
 
 ## Cost per run
 
-$0 marginal: local model, local SQLite. Latency per patient on the dev machine (Intel i9 MacBook Pro, CPU only) is
-reported in EVALS.md.
+$0 marginal per patient: open-weights model, SQLite, no paid API. Latency per patient on a single T4 GPU (Kaggle) is
+reported in EVALS.md — median 1–8 s once the model is loaded; the first call after load takes ~90 s.
