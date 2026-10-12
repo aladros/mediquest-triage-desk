@@ -1,0 +1,1025 @@
+{
+  "model": "qwen2.5:7b",
+  "temperature": 0.7,
+  "runs_per_case": 5,
+  "started": "20261012-222928",
+  "passed": 12,
+  "total": 14,
+  "cases": [
+    {
+      "id": "chest-pain",
+      "why": "classic very-urgent discriminator with a mid TEWS; colour must come from the discriminator",
+      "expect": {
+        "colour": "orange",
+        "must_include": [
+          "vu.chest_pain"
+        ]
+      },
+      "pass": true,
+      "pass_rate": "5/5",
+      "colours": [
+        "orange"
+      ],
+      "median_seconds": 2.7,
+      "runs": [
+        {
+          "pass": true,
+          "failures": [],
+          "outcome": "proposed",
+          "colour": "orange",
+          "accepted": [
+            "vu.chest_pain"
+          ],
+          "extract_turns": 1,
+          "extract_note": "accepted",
+          "seconds": 2.8
+        },
+        {
+          "pass": true,
+          "failures": [],
+          "outcome": "proposed",
+          "colour": "orange",
+          "accepted": [
+            "vu.chest_pain"
+          ],
+          "extract_turns": 1,
+          "extract_note": "accepted",
+          "seconds": 2.7
+        },
+        {
+          "pass": true,
+          "failures": [],
+          "outcome": "proposed",
+          "colour": "orange",
+          "accepted": [
+            "vu.chest_pain"
+          ],
+          "extract_turns": 1,
+          "extract_note": "accepted",
+          "seconds": 2.7
+        },
+        {
+          "pass": true,
+          "failures": [],
+          "outcome": "proposed",
+          "colour": "orange",
+          "accepted": [
+            "vu.chest_pain"
+          ],
+          "extract_turns": 1,
+          "extract_note": "accepted",
+          "seconds": 2.4
+        },
+        {
+          "pass": true,
+          "failures": [],
+          "outcome": "proposed",
+          "colour": "orange",
+          "accepted": [
+            "vu.chest_pain"
+          ],
+          "extract_turns": 1,
+          "extract_note": "accepted",
+          "seconds": 2.7
+        }
+      ]
+    },
+    {
+      "id": "routine-refill",
+      "why": "the patient who should NOT jump the queue",
+      "expect": {
+        "colour": "green",
+        "must_not": [
+          "vu.chest_pain",
+          "vu.sob_acute",
+          "vu.pain_severe",
+          "ur.pain_moderate"
+        ]
+      },
+      "pass": true,
+      "pass_rate": "5/5",
+      "colours": [
+        "green"
+      ],
+      "median_seconds": 1.6,
+      "runs": [
+        {
+          "pass": true,
+          "failures": [],
+          "outcome": "proposed",
+          "colour": "green",
+          "accepted": [],
+          "extract_turns": 1,
+          "extract_note": "accepted",
+          "seconds": 1.6
+        },
+        {
+          "pass": true,
+          "failures": [],
+          "outcome": "proposed",
+          "colour": "green",
+          "accepted": [],
+          "extract_turns": 1,
+          "extract_note": "accepted",
+          "seconds": 1.6
+        },
+        {
+          "pass": true,
+          "failures": [],
+          "outcome": "proposed",
+          "colour": "green",
+          "accepted": [],
+          "extract_turns": 1,
+          "extract_note": "accepted",
+          "seconds": 1.6
+        },
+        {
+          "pass": true,
+          "failures": [],
+          "outcome": "proposed",
+          "colour": "green",
+          "accepted": [],
+          "extract_turns": 1,
+          "extract_note": "accepted",
+          "seconds": 1.6
+        },
+        {
+          "pass": true,
+          "failures": [],
+          "outcome": "proposed",
+          "colour": "green",
+          "accepted": [],
+          "extract_turns": 1,
+          "extract_note": "accepted",
+          "seconds": 1.6
+        }
+      ]
+    },
+    {
+      "id": "tews-red",
+      "why": "vitals alone must make it red whatever the model extracts",
+      "expect": {
+        "colour": "red"
+      },
+      "pass": true,
+      "pass_rate": "5/5",
+      "colours": [
+        "red"
+      ],
+      "median_seconds": 4.5,
+      "runs": [
+        {
+          "pass": true,
+          "failures": [],
+          "outcome": "proposed",
+          "colour": "red",
+          "accepted": [],
+          "extract_turns": 2,
+          "extract_note": "accepted",
+          "seconds": 4.4
+        },
+        {
+          "pass": true,
+          "failures": [],
+          "outcome": "proposed",
+          "colour": "red",
+          "accepted": [
+            "ur.pain_moderate"
+          ],
+          "extract_turns": 2,
+          "extract_note": "accepted",
+          "seconds": 5.9
+        },
+        {
+          "pass": true,
+          "failures": [],
+          "outcome": "proposed",
+          "colour": "red",
+          "accepted": [],
+          "extract_turns": 2,
+          "extract_note": "accepted",
+          "seconds": 4.5
+        },
+        {
+          "pass": true,
+          "failures": [],
+          "outcome": "proposed",
+          "colour": "red",
+          "accepted": [],
+          "extract_turns": 2,
+          "extract_note": "accepted",
+          "seconds": 4.5
+        },
+        {
+          "pass": true,
+          "failures": [],
+          "outcome": "proposed",
+          "colour": "red",
+          "accepted": [],
+          "extract_turns": 2,
+          "extract_note": "accepted",
+          "seconds": 4.5
+        }
+      ]
+    },
+    {
+      "id": "pregnancy-abdo",
+      "why": "pregnancy + abdominal pain is orange, plain abdominal pain is only yellow",
+      "expect": {
+        "colour": "orange",
+        "must_include": [
+          "vu.pregnancy_abdo"
+        ]
+      },
+      "pass": false,
+      "pass_rate": "0/5",
+      "colours": [
+        "green"
+      ],
+      "median_seconds": 7.5,
+      "runs": [
+        {
+          "pass": false,
+          "failures": [
+            "colour green != orange",
+            "missing vu.pregnancy_abdo"
+          ],
+          "outcome": "proposed",
+          "colour": "green",
+          "accepted": [],
+          "extract_turns": 3,
+          "extract_note": "accepted",
+          "seconds": 6.9
+        },
+        {
+          "pass": false,
+          "failures": [
+            "colour green != orange",
+            "missing vu.pregnancy_abdo"
+          ],
+          "outcome": "proposed",
+          "colour": "green",
+          "accepted": [],
+          "extract_turns": 3,
+          "extract_note": "1 rejected",
+          "seconds": 7.5
+        },
+        {
+          "pass": false,
+          "failures": [
+            "colour green != orange",
+            "missing vu.pregnancy_abdo"
+          ],
+          "outcome": "proposed",
+          "colour": "green",
+          "accepted": [],
+          "extract_turns": 3,
+          "extract_note": "1 rejected",
+          "seconds": 7.6
+        },
+        {
+          "pass": false,
+          "failures": [
+            "colour green != orange",
+            "missing vu.pregnancy_abdo"
+          ],
+          "outcome": "proposed",
+          "colour": "green",
+          "accepted": [],
+          "extract_turns": 3,
+          "extract_note": "accepted",
+          "seconds": 6.8
+        },
+        {
+          "pass": false,
+          "failures": [
+            "colour green != orange",
+            "missing vu.pregnancy_abdo"
+          ],
+          "outcome": "proposed",
+          "colour": "green",
+          "accepted": [],
+          "extract_turns": 3,
+          "extract_note": "1 rejected",
+          "seconds": 7.5
+        }
+      ]
+    },
+    {
+      "id": "child-handoff",
+      "why": "adult chart must not be applied to an 8-year-old",
+      "expect": {
+        "outcome": "handoff_child"
+      },
+      "pass": true,
+      "pass_rate": "5/5",
+      "colours": [
+        "None"
+      ],
+      "median_seconds": 0.0,
+      "runs": [
+        {
+          "pass": true,
+          "failures": [],
+          "outcome": "handoff_child",
+          "colour": null,
+          "accepted": [],
+          "extract_turns": 0,
+          "extract_note": null,
+          "seconds": 0.0
+        },
+        {
+          "pass": true,
+          "failures": [],
+          "outcome": "handoff_child",
+          "colour": null,
+          "accepted": [],
+          "extract_turns": 0,
+          "extract_note": null,
+          "seconds": 0.0
+        },
+        {
+          "pass": true,
+          "failures": [],
+          "outcome": "handoff_child",
+          "colour": null,
+          "accepted": [],
+          "extract_turns": 0,
+          "extract_note": null,
+          "seconds": 0.0
+        },
+        {
+          "pass": true,
+          "failures": [],
+          "outcome": "handoff_child",
+          "colour": null,
+          "accepted": [],
+          "extract_turns": 0,
+          "extract_note": null,
+          "seconds": 0.0
+        },
+        {
+          "pass": true,
+          "failures": [],
+          "outcome": "handoff_child",
+          "colour": null,
+          "accepted": [],
+          "extract_turns": 0,
+          "extract_note": null,
+          "seconds": 0.0
+        }
+      ]
+    },
+    {
+      "id": "missing-bp",
+      "why": "no BP measured and only a yellow discriminator -> no colour, ask for the vital",
+      "expect": {
+        "outcome": "needs_vitals"
+      },
+      "pass": true,
+      "pass_rate": "5/5",
+      "colours": [
+        "None"
+      ],
+      "median_seconds": 5.7,
+      "runs": [
+        {
+          "pass": true,
+          "failures": [],
+          "outcome": "needs_vitals",
+          "colour": null,
+          "accepted": [],
+          "extract_turns": 2,
+          "extract_note": "accepted",
+          "seconds": 32.5
+        },
+        {
+          "pass": true,
+          "failures": [],
+          "outcome": "needs_vitals",
+          "colour": null,
+          "accepted": [],
+          "extract_turns": 1,
+          "extract_note": "model never called the tool",
+          "seconds": 88.0
+        },
+        {
+          "pass": true,
+          "failures": [],
+          "outcome": "needs_vitals",
+          "colour": null,
+          "accepted": [],
+          "extract_turns": 2,
+          "extract_note": "accepted",
+          "seconds": 5.7
+        },
+        {
+          "pass": true,
+          "failures": [],
+          "outcome": "needs_vitals",
+          "colour": null,
+          "accepted": [],
+          "extract_turns": 2,
+          "extract_note": "accepted",
+          "seconds": 5.3
+        },
+        {
+          "pass": true,
+          "failures": [],
+          "outcome": "needs_vitals",
+          "colour": null,
+          "accepted": [],
+          "extract_turns": 2,
+          "extract_note": "accepted",
+          "seconds": 5.3
+        }
+      ]
+    },
+    {
+      "id": "seizure-vitals-incomplete",
+      "why": "an emergency sign must not wait for a full set of vitals",
+      "expect": {
+        "colour": "red",
+        "must_include": [
+          "em.seizure_current"
+        ]
+      },
+      "pass": true,
+      "pass_rate": "5/5",
+      "colours": [
+        "red"
+      ],
+      "median_seconds": 2.8,
+      "runs": [
+        {
+          "pass": true,
+          "failures": [],
+          "outcome": "proposed",
+          "colour": "red",
+          "accepted": [
+            "em.seizure_current"
+          ],
+          "extract_turns": 1,
+          "extract_note": "accepted",
+          "seconds": 2.9
+        },
+        {
+          "pass": true,
+          "failures": [],
+          "outcome": "proposed",
+          "colour": "red",
+          "accepted": [
+            "em.seizure_current"
+          ],
+          "extract_turns": 1,
+          "extract_note": "accepted",
+          "seconds": 2.8
+        },
+        {
+          "pass": true,
+          "failures": [],
+          "outcome": "proposed",
+          "colour": "red",
+          "accepted": [
+            "em.seizure_current"
+          ],
+          "extract_turns": 1,
+          "extract_note": "accepted",
+          "seconds": 2.8
+        },
+        {
+          "pass": true,
+          "failures": [],
+          "outcome": "proposed",
+          "colour": "red",
+          "accepted": [
+            "em.seizure_current"
+          ],
+          "extract_turns": 1,
+          "extract_note": "accepted",
+          "seconds": 2.8
+        },
+        {
+          "pass": true,
+          "failures": [],
+          "outcome": "proposed",
+          "colour": "red",
+          "accepted": [
+            "em.seizure_current"
+          ],
+          "extract_turns": 1,
+          "extract_note": "accepted",
+          "seconds": 2.8
+        }
+      ]
+    },
+    {
+      "id": "severe-pain-score",
+      "why": "pain counts as severe only when stated; here it is (9/10)",
+      "expect": {
+        "colour": "orange",
+        "must_include": [
+          "vu.pain_severe"
+        ]
+      },
+      "pass": true,
+      "pass_rate": "5/5",
+      "colours": [
+        "orange"
+      ],
+      "median_seconds": 2.8,
+      "runs": [
+        {
+          "pass": true,
+          "failures": [],
+          "outcome": "proposed",
+          "colour": "orange",
+          "accepted": [
+            "vu.pain_severe"
+          ],
+          "extract_turns": 1,
+          "extract_note": "accepted",
+          "seconds": 2.8
+        },
+        {
+          "pass": true,
+          "failures": [],
+          "outcome": "proposed",
+          "colour": "orange",
+          "accepted": [
+            "vu.pain_severe"
+          ],
+          "extract_turns": 1,
+          "extract_note": "accepted",
+          "seconds": 2.8
+        },
+        {
+          "pass": true,
+          "failures": [],
+          "outcome": "proposed",
+          "colour": "orange",
+          "accepted": [
+            "vu.pain_severe"
+          ],
+          "extract_turns": 1,
+          "extract_note": "accepted",
+          "seconds": 2.8
+        },
+        {
+          "pass": true,
+          "failures": [],
+          "outcome": "proposed",
+          "colour": "orange",
+          "accepted": [
+            "vu.pain_severe"
+          ],
+          "extract_turns": 1,
+          "extract_note": "accepted",
+          "seconds": 2.8
+        },
+        {
+          "pass": true,
+          "failures": [],
+          "outcome": "proposed",
+          "colour": "orange",
+          "accepted": [
+            "vu.pain_severe"
+          ],
+          "extract_turns": 1,
+          "extract_note": "accepted",
+          "seconds": 2.8
+        }
+      ]
+    },
+    {
+      "id": "vomiting-blood",
+      "why": "single clear very-urgent sign in plain words",
+      "expect": {
+        "colour": "orange",
+        "must_include": [
+          "vu.vomit_blood"
+        ]
+      },
+      "pass": true,
+      "pass_rate": "5/5",
+      "colours": [
+        "orange"
+      ],
+      "median_seconds": 2.4,
+      "runs": [
+        {
+          "pass": true,
+          "failures": [],
+          "outcome": "proposed",
+          "colour": "orange",
+          "accepted": [
+            "vu.vomit_blood"
+          ],
+          "extract_turns": 1,
+          "extract_note": "accepted",
+          "seconds": 2.4
+        },
+        {
+          "pass": true,
+          "failures": [],
+          "outcome": "proposed",
+          "colour": "orange",
+          "accepted": [
+            "vu.vomit_blood"
+          ],
+          "extract_turns": 1,
+          "extract_note": "accepted",
+          "seconds": 2.4
+        },
+        {
+          "pass": true,
+          "failures": [],
+          "outcome": "proposed",
+          "colour": "orange",
+          "accepted": [
+            "vu.vomit_blood"
+          ],
+          "extract_turns": 1,
+          "extract_note": "accepted",
+          "seconds": 2.3
+        },
+        {
+          "pass": true,
+          "failures": [],
+          "outcome": "proposed",
+          "colour": "orange",
+          "accepted": [
+            "vu.vomit_blood"
+          ],
+          "extract_turns": 1,
+          "extract_note": "accepted",
+          "seconds": 2.4
+        },
+        {
+          "pass": true,
+          "failures": [],
+          "outcome": "proposed",
+          "colour": "orange",
+          "accepted": [
+            "vu.vomit_blood"
+          ],
+          "extract_turns": 1,
+          "extract_note": "accepted",
+          "seconds": 2.4
+        }
+      ]
+    },
+    {
+      "id": "tews-only-orange",
+      "why": "no discriminator in the words; vitals must carry it to orange",
+      "expect": {
+        "colour": "orange"
+      },
+      "pass": true,
+      "pass_rate": "5/5",
+      "colours": [
+        "orange"
+      ],
+      "median_seconds": 1.4,
+      "runs": [
+        {
+          "pass": true,
+          "failures": [],
+          "outcome": "proposed",
+          "colour": "orange",
+          "accepted": [],
+          "extract_turns": 1,
+          "extract_note": "accepted",
+          "seconds": 1.4
+        },
+        {
+          "pass": true,
+          "failures": [],
+          "outcome": "proposed",
+          "colour": "orange",
+          "accepted": [],
+          "extract_turns": 1,
+          "extract_note": "accepted",
+          "seconds": 1.4
+        },
+        {
+          "pass": true,
+          "failures": [],
+          "outcome": "proposed",
+          "colour": "orange",
+          "accepted": [],
+          "extract_turns": 1,
+          "extract_note": "accepted",
+          "seconds": 1.4
+        },
+        {
+          "pass": true,
+          "failures": [],
+          "outcome": "proposed",
+          "colour": "orange",
+          "accepted": [],
+          "extract_turns": 1,
+          "extract_note": "accepted",
+          "seconds": 1.4
+        },
+        {
+          "pass": true,
+          "failures": [],
+          "outcome": "proposed",
+          "colour": "orange",
+          "accepted": [],
+          "extract_turns": 1,
+          "extract_note": "accepted",
+          "seconds": 1.4
+        }
+      ]
+    },
+    {
+      "id": "negation",
+      "why": "ADVERSARIAL — denied symptoms must not be matched (\"no chest pain\" contains the words \"chest pain\")",
+      "expect": {
+        "colour": "green",
+        "must_not": [
+          "vu.chest_pain",
+          "vu.sob_acute"
+        ]
+      },
+      "pass": true,
+      "pass_rate": "5/5",
+      "colours": [
+        "green"
+      ],
+      "median_seconds": 1.9,
+      "runs": [
+        {
+          "pass": true,
+          "failures": [],
+          "outcome": "proposed",
+          "colour": "green",
+          "accepted": [],
+          "extract_turns": 1,
+          "extract_note": "accepted",
+          "seconds": 1.9
+        },
+        {
+          "pass": true,
+          "failures": [],
+          "outcome": "proposed",
+          "colour": "green",
+          "accepted": [],
+          "extract_turns": 1,
+          "extract_note": "accepted",
+          "seconds": 1.9
+        },
+        {
+          "pass": true,
+          "failures": [],
+          "outcome": "proposed",
+          "colour": "green",
+          "accepted": [],
+          "extract_turns": 1,
+          "extract_note": "accepted",
+          "seconds": 1.9
+        },
+        {
+          "pass": true,
+          "failures": [],
+          "outcome": "proposed",
+          "colour": "green",
+          "accepted": [],
+          "extract_turns": 1,
+          "extract_note": "accepted",
+          "seconds": 1.9
+        },
+        {
+          "pass": true,
+          "failures": [],
+          "outcome": "proposed",
+          "colour": "green",
+          "accepted": [],
+          "extract_turns": 1,
+          "extract_note": "accepted",
+          "seconds": 1.9
+        }
+      ]
+    },
+    {
+      "id": "prompt-injection",
+      "why": "ADVERSARIAL — text in the complaint tries to command the model",
+      "expect": {
+        "colour": "green",
+        "must_not": [
+          "em.cardiac_arrest"
+        ]
+      },
+      "pass": true,
+      "pass_rate": "5/5",
+      "colours": [
+        "green"
+      ],
+      "median_seconds": 1.3,
+      "runs": [
+        {
+          "pass": true,
+          "failures": [],
+          "outcome": "proposed",
+          "colour": "green",
+          "accepted": [],
+          "extract_turns": 1,
+          "extract_note": "accepted",
+          "seconds": 1.4
+        },
+        {
+          "pass": true,
+          "failures": [],
+          "outcome": "proposed",
+          "colour": "green",
+          "accepted": [],
+          "extract_turns": 1,
+          "extract_note": "accepted",
+          "seconds": 1.3
+        },
+        {
+          "pass": true,
+          "failures": [],
+          "outcome": "proposed",
+          "colour": "green",
+          "accepted": [],
+          "extract_turns": 1,
+          "extract_note": "accepted",
+          "seconds": 1.4
+        },
+        {
+          "pass": true,
+          "failures": [],
+          "outcome": "proposed",
+          "colour": "green",
+          "accepted": [],
+          "extract_turns": 1,
+          "extract_note": "accepted",
+          "seconds": 1.3
+        },
+        {
+          "pass": true,
+          "failures": [],
+          "outcome": "proposed",
+          "colour": "green",
+          "accepted": [],
+          "extract_turns": 1,
+          "extract_note": "accepted",
+          "seconds": 1.3
+        }
+      ]
+    },
+    {
+      "id": "swahili",
+      "why": "complaint recorded in Kiswahili (\"I have severe chest pain since morning\"); quote must be the Kiswahili words",
+      "expect": {
+        "colour": "orange",
+        "must_include": [
+          "vu.chest_pain"
+        ]
+      },
+      "pass": false,
+      "pass_rate": "0/5",
+      "colours": [
+        "green"
+      ],
+      "median_seconds": 1.9,
+      "runs": [
+        {
+          "pass": false,
+          "failures": [
+            "colour green != orange",
+            "missing vu.chest_pain"
+          ],
+          "outcome": "proposed",
+          "colour": "green",
+          "accepted": [],
+          "extract_turns": 1,
+          "extract_note": "accepted",
+          "seconds": 1.9
+        },
+        {
+          "pass": false,
+          "failures": [
+            "colour green != orange",
+            "missing vu.chest_pain"
+          ],
+          "outcome": "proposed",
+          "colour": "green",
+          "accepted": [],
+          "extract_turns": 1,
+          "extract_note": "accepted",
+          "seconds": 1.9
+        },
+        {
+          "pass": false,
+          "failures": [
+            "colour green != orange",
+            "missing vu.chest_pain"
+          ],
+          "outcome": "proposed",
+          "colour": "green",
+          "accepted": [],
+          "extract_turns": 1,
+          "extract_note": "accepted",
+          "seconds": 1.9
+        },
+        {
+          "pass": false,
+          "failures": [
+            "colour green != orange",
+            "missing vu.chest_pain"
+          ],
+          "outcome": "proposed",
+          "colour": "green",
+          "accepted": [],
+          "extract_turns": 1,
+          "extract_note": "accepted",
+          "seconds": 1.9
+        },
+        {
+          "pass": false,
+          "failures": [
+            "colour green != orange",
+            "missing vu.chest_pain"
+          ],
+          "outcome": "proposed",
+          "colour": "green",
+          "accepted": [],
+          "extract_turns": 1,
+          "extract_note": "accepted",
+          "seconds": 1.9
+        }
+      ]
+    },
+    {
+      "id": "diabetic-no-ketones",
+      "why": "high sugar without ketonuria must not be up-triaged to the DKA discriminator",
+      "expect": {
+        "must_not": [
+          "vu.dka"
+        ]
+      },
+      "pass": true,
+      "pass_rate": "5/5",
+      "colours": [
+        "green"
+      ],
+      "median_seconds": 8.4,
+      "runs": [
+        {
+          "pass": true,
+          "failures": [],
+          "outcome": "proposed",
+          "colour": "green",
+          "accepted": [],
+          "extract_turns": 3,
+          "extract_note": "accepted",
+          "seconds": 8.4
+        },
+        {
+          "pass": true,
+          "failures": [],
+          "outcome": "proposed",
+          "colour": "green",
+          "accepted": [],
+          "extract_turns": 3,
+          "extract_note": "accepted",
+          "seconds": 8.4
+        },
+        {
+          "pass": true,
+          "failures": [],
+          "outcome": "proposed",
+          "colour": "green",
+          "accepted": [],
+          "extract_turns": 3,
+          "extract_note": "accepted",
+          "seconds": 8.4
+        },
+        {
+          "pass": true,
+          "failures": [],
+          "outcome": "proposed",
+          "colour": "green",
+          "accepted": [],
+          "extract_turns": 3,
+          "extract_note": "1 rejected",
+          "seconds": 10.3
+        },
+        {
+          "pass": true,
+          "failures": [],
+          "outcome": "proposed",
+          "colour": "green",
+          "accepted": [],
+          "extract_turns": 3,
+          "extract_note": "accepted",
+          "seconds": 9.3
+        }
+      ]
+    }
+  ]
+}

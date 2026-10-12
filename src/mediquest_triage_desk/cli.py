@@ -50,6 +50,9 @@ def print_proposal(p: dict[str, Any]) -> None:
     print("  Why (cited):")
     for c in p.get("citations", []):
         print(f"    • [{c['cite']}] {c['detail']}")
+    for u in p.get("unverified", []):
+        print(f"    ⚠ UNVERIFIED — model suggested [{u['id']}] {u['label']} ({u['colour']}) but could not cite it "
+              f"(tried \"{u['quote']}\"). Not in the colour. Check with the patient.")
     for r in p.get("rejected_candidates", []):
         print(f"    {DIM}✗ dropped [{r['id']}] \"{r['quote']}\" — {r['reason']}{RESET}")
 

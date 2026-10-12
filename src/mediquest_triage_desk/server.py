@@ -90,10 +90,11 @@ def match_discriminators(complaint: str, candidates: list[Candidate]) -> dict[st
 @mcp.tool()
 @audited
 def propose_priority(patient_id: str, age_years: int, complaint: str, vitals: Vitals,
-                     candidates: list[Candidate]) -> dict[str, Any]:
+                     candidates: list[Candidate], unverified: list[Candidate] | None = None) -> dict[str, Any]:
     """Write a PENDING priority proposal for a nurse to confirm. Re-scores TEWS and re-validates every discriminator
     server-side; the proposal carries the citation for each contributing vital band and complaint phrase.
-    Does NOT change the queue."""
+    `unverified`: discriminators the agent raised but could not cite. They never affect the colour; they are shown to
+    the nurse as "check with the patient". Does NOT change the queue."""
     if age_years < sats.chart()["min_age_years"]:
         return {"status": "refused", "reason": f"age {age_years}: SATS paediatric charts are not implemented — "
                                                "triage this child by hand"}
@@ -102,6 +103,9 @@ def propose_priority(patient_id: str, age_years: int, complaint: str, vitals: Vi
     checked = sats.check_discriminators(complaint, [c.model_dump() for c in candidates])
     result = sats.combine(tews, checked["accepted"])
     result["rejected_candidates"] = checked["rejected"]
+    index = sats.discriminator_index()
+    result["unverified"] = [{"id": u.id, "label": index[u.id]["label"], "colour": index[u.id]["colour"],
+                             "quote": u.quote} for u in (unverified or []) if u.id in index]
     store.register_patient(patient_id, age_years, complaint, v)
     if result["status"] == "needs_vitals":
         return {"patient_id": patient_id, "proposal_id": None, **result,

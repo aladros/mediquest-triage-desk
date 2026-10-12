@@ -48,7 +48,7 @@ async def run_evals(args) -> None:
                 seconds = round(time.perf_counter() - t0, 1)
                 runs.append(judge(case, state, seconds))
                 print(f"{case['id']:<26} run {i + 1}: {'PASS' if runs[-1]['pass'] else 'FAIL'}  "
-                      f"colour={runs[-1]['colour']} accepted={runs[-1]['accepted']} {seconds}s "
+                      f"colour={runs[-1]['colour']} accepted={runs[-1]['accepted']} unverified={runs[-1]['unverified']} {seconds}s "
                       f"{'; '.join(runs[-1]['failures'])}")
             results.append({"id": case["id"], "why": case["why"], "expect": case["expect"],
                             "pass": all(r["pass"] for r in runs),
@@ -86,5 +86,6 @@ def judge(case: dict[str, Any], state: dict[str, Any], seconds: float) -> dict[s
     if proposal.get("proposal_id") and not proposal.get("citations"):
         failures.append("proposal without citations")
     return {"pass": not failures, "failures": failures, "outcome": got_outcome, "colour": colour,
-            "accepted": accepted, "extract_turns": state.get("extract_turns"),
+            "accepted": accepted, "unverified": [u["id"] for u in proposal.get("unverified", [])],
+            "extract_turns": state.get("extract_turns"),
             "extract_note": state.get("extract_note"), "seconds": seconds}

@@ -105,6 +105,7 @@ class TriageState(TypedDict, total=False):
     vitals: dict[str, Any]
     tews: dict[str, Any]
     candidates: list[dict[str, Any]]
+    unverified: list[dict[str, Any]]
     extract_turns: int
     extract_note: str
     proposal: dict[str, Any]
@@ -155,6 +156,7 @@ def build_graph(hub: MCPHub, llm: Any | None = None, checkpointer: Any | None = 
         messages: list[Any] = [SystemMessage(SYSTEM.format(discriminators=lines)),
                                HumanMessage(f"Presenting complaint:\n{state['complaint']}")]
         accepted: list[dict[str, Any]] = []
+        tried: dict[str, dict[str, Any]] = {}  # every discriminator the model raised, with its last rejection
         note = "model never called the tool"
         for turn in range(1, MAX_EXTRACT_TURNS + 1):
             reply: AIMessage = await bound.ainvoke(messages)
@@ -168,6 +170,8 @@ def build_graph(hub: MCPHub, llm: Any | None = None, checkpointer: Any | None = 
                 try:
                     result = await hub.call("triage-desk", "match_discriminators", args, caller="model")
                     accepted = result["accepted"]
+                    for r in result["rejected"]:
+                        tried[r["id"]] = r
                     content = json.dumps(result)
                     note = "accepted" if not result["rejected"] else f"{len(result['rejected'])} rejected"
                 except ToolError as exc:
@@ -178,13 +182,19 @@ def build_graph(hub: MCPHub, llm: Any | None = None, checkpointer: Any | None = 
                 break
         store.audit("extract_done", patient_id=state["patient_id"], turns=turn, note=note,
                     accepted=[a["id"] for a in accepted])
-        return {"candidates": [{"id": a["id"], "quote": a["quote"]} for a in accepted],
+        # A discriminator the model raised but never managed to cite is NOT dropped silently: it goes to the nurse as
+        # "suggested, unverified". It cannot set the colour (no source), but she sees it at the gate.
+        accepted_ids = {a["id"] for a in accepted}
+        unverified = [{"id": i, "quote": r["quote"], "reason": r["reason"]} for i, r in tried.items()
+                      if i not in accepted_ids]
+        return {"candidates": [{"id": a["id"], "quote": a["quote"]} for a in accepted], "unverified": unverified,
                 "extract_turns": turn, "extract_note": note}
 
     async def propose(state: TriageState) -> TriageState:
         proposal = await hub.call("triage-desk", "propose_priority", {
             "patient_id": state["patient_id"], "age_years": int(state["age_years"]), "complaint": state["complaint"],
-            "vitals": state["vitals"], "candidates": state.get("candidates", [])}, caller="agent")
+            "vitals": state["vitals"], "candidates": state.get("candidates", []),
+            "unverified": state.get("unverified", [])}, caller="agent")
         return {"proposal": proposal}
 
     def route_proposal(state: TriageState) -> str:
