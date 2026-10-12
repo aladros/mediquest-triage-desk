@@ -12,3 +12,4 @@ var/
 evals/runs/
 .DS_Store
 kaggle/build/
+kaggle/build-demo/
