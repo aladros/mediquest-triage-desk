@@ -1,0 +1,115 @@
+# South African Triage Scale (SATS) — ADULT chart (patients 13 years and older).
+#
+# Source: Emergency Medicine Society of South Africa (EMSSA), "The South African Triage Scale (SATS)
+# Training Manual", 2012 — adult triage chart: Triage Early Warning Score (TEWS) + clinical discriminator list.
+# Transcribed by hand for this prototype. VERIFY every band below against the chart edition your facility uses
+# before any clinical use. Every priority this system proposes cites the `id` of the row it came from, so a wrong
+# row is traceable to exactly one line of this file.
+source: "EMSSA SATS Training Manual 2012, adult chart"
+min_age_years: 13
+
+# TEWS parameters. Bands are half-open [from, below) so no measured value can fall between two bands; null = open-ended.
+tews:
+  respiratory_rate:
+    unit: breaths/min
+    bands:
+      - {id: rr.lt9,     from: null, below: 9,    score: 3, label: "RR less than 9"}
+      - {id: rr.9-14,    from: 9, below: 15,   score: 0, label: "RR 9-14"}
+      - {id: rr.15-20,   from: 15, below: 21,   score: 1, label: "RR 15-20"}
+      - {id: rr.21-29,   from: 21, below: 30,   score: 2, label: "RR 21-29"}
+      - {id: rr.gt29,    from: 30, below: null, score: 3, label: "RR more than 29"}
+  heart_rate:
+    unit: beats/min
+    bands:
+      - {id: hr.lt41,    from: null, below: 41,   score: 3, label: "HR less than 41"}
+      - {id: hr.41-50,   from: 41, below: 51,   score: 1, label: "HR 41-50"}
+      - {id: hr.51-100,  from: 51, below: 101,  score: 0, label: "HR 51-100"}
+      - {id: hr.101-110, from: 101, below: 111,  score: 1, label: "HR 101-110"}
+      - {id: hr.111-129, from: 111, below: 130,  score: 2, label: "HR 111-129"}
+      - {id: hr.gt129,   from: 130, below: null, score: 3, label: "HR more than 129"}
+  systolic_bp:
+    unit: mmHg
+    bands:
+      - {id: sbp.lt71,   from: null, below: 71,   score: 3, label: "Systolic BP less than 71"}
+      - {id: sbp.71-80,  from: 71, below: 81,   score: 2, label: "Systolic BP 71-80"}
+      - {id: sbp.81-100, from: 81, below: 101,  score: 1, label: "Systolic BP 81-100"}
+      - {id: sbp.101-199, from: 101, below: 200,  score: 0, label: "Systolic BP 101-199"}
+      - {id: sbp.gt199,  from: 200, below: null, score: 2, label: "Systolic BP more than 199"}
+  temperature_c:
+    unit: "°C"
+    bands:
+      - {id: temp.lt35,    from: null, below: 35.0, score: 2, label: "Temperature cold / less than 35"}
+      - {id: temp.35-38.4, from: 35.0, below: 38.5, score: 0, label: "Temperature 35-38.4"}
+      - {id: temp.gt38.4,  from: 38.5, below: null, score: 2, label: "Temperature hot / more than 38.4"}
+  # Categorical parameters.
+  avpu:
+    values:
+      alert:        {id: avpu.alert,  score: 0, label: "Alert"}
+      voice:        {id: avpu.voice,  score: 1, label: "Reacts to voice"}
+      pain:         {id: avpu.pain,   score: 2, label: "Reacts to pain"}
+      unresponsive: {id: avpu.unresp, score: 3, label: "Unresponsive"}
+  mobility:
+    values:
+      walking:   {id: mob.walking,   score: 0, label: "Walking"}
+      with_help: {id: mob.with_help, score: 1, label: "Walks with help"}
+      stretcher: {id: mob.stretcher, score: 2, label: "Stretcher / immobile"}
+  trauma:
+    values:
+      "no":  {id: trauma.no,  score: 0, label: "No trauma"}
+      "yes": {id: trauma.yes, score: 1, label: "Trauma"}
+
+# TEWS total -> colour. Inclusive ranges.
+tews_colour:
+  - {min: 0, max: 2,    colour: green}
+  - {min: 3, max: 4,    colour: yellow}
+  - {min: 5, max: 6,    colour: orange}
+  - {min: 7, max: null, colour: red}
+
+# Target time to be seen by a clinician, per colour.
+target_minutes:
+  red: 0
+  orange: 10
+  yellow: 60
+  green: 240
+
+# Clinical discriminators. Any match sets at least this colour (final colour = higher of TEWS and discriminators).
+discriminators:
+  # Emergency signs -> RED
+  - {id: em.airway,       colour: red,    label: "Obstructed airway"}
+  - {id: em.not_breathing, colour: red,   label: "Not breathing"}
+  - {id: em.seizure_current, colour: red, label: "Seizure – current"}
+  - {id: em.burn_face,    colour: red,    label: "Burn – facial / inhalation"}
+  - {id: em.hypoglycaemia, colour: red,   label: "Hypoglycaemia – glucose less than 3 mmol/L"}
+  - {id: em.cardiac_arrest, colour: red,  label: "Cardiac arrest"}
+  # Very urgent -> ORANGE
+  - {id: vu.sob_acute,    colour: orange, label: "Shortness of breath – acute"}
+  - {id: vu.cough_blood,  colour: orange, label: "Coughing blood"}
+  - {id: vu.chest_pain,   colour: orange, label: "Chest pain"}
+  - {id: vu.haem_uncontrolled, colour: orange, label: "Haemorrhage – uncontrolled"}
+  - {id: vu.seizure_postictal, colour: orange, label: "Seizure – post-ictal"}
+  - {id: vu.focal_neuro,  colour: orange, label: "Focal neurology – acute"}
+  - {id: vu.loc_reduced,  colour: orange, label: "Level of consciousness reduced"}
+  - {id: vu.psychosis,    colour: orange, label: "Psychosis / aggression"}
+  - {id: vu.threatened_limb, colour: orange, label: "Threatened limb"}
+  - {id: vu.dislocation_large, colour: orange, label: "Dislocation – larger joint (not finger or toe)"}
+  - {id: vu.fracture_compound, colour: orange, label: "Fracture – compound"}
+  - {id: vu.burn_20,      colour: orange, label: "Burn – over 20% body surface"}
+  - {id: vu.burn_electrical, colour: orange, label: "Burn – electrical"}
+  - {id: vu.burn_circumferential, colour: orange, label: "Burn – circumferential"}
+  - {id: vu.burn_chemical, colour: orange, label: "Burn – chemical"}
+  - {id: vu.dka,          colour: orange, label: "Diabetic – glucose over 11 mmol/L and ketonuria"}
+  - {id: vu.vomit_blood,  colour: orange, label: "Vomiting fresh blood"}
+  - {id: vu.pregnancy_abdo, colour: orange, label: "Pregnancy and abdominal trauma or abdominal pain"}
+  - {id: vu.poisoning,    colour: orange, label: "Poisoning / overdose"}
+  - {id: vu.pain_severe,  colour: orange, label: "Severe pain"}
+  # Urgent -> YELLOW
+  - {id: ur.haem_controlled, colour: yellow, label: "Haemorrhage – controlled"}
+  - {id: ur.dislocation_small, colour: yellow, label: "Dislocation – finger or toe"}
+  - {id: ur.fracture_closed, colour: yellow, label: "Fracture – closed"}
+  - {id: ur.burn_other,   colour: yellow, label: "Burn – other"}
+  - {id: ur.hyperglycaemia, colour: yellow, label: "Diabetic – glucose over 17 mmol/L, no ketonuria"}
+  - {id: ur.vomit_persistent, colour: yellow, label: "Vomiting – persistent"}
+  - {id: ur.pregnancy_trauma, colour: yellow, label: "Pregnancy and trauma"}
+  - {id: ur.pregnancy_pv_bleed, colour: yellow, label: "Pregnancy and PV bleed"}
+  - {id: ur.abdo_pain,    colour: yellow, label: "Abdominal pain"}
+  - {id: ur.pain_moderate, colour: yellow, label: "Moderate pain"}

@@ -1,0 +1,30 @@
+[project]
+name = "mediquest-triage-desk"
+version = "0.1.0"
+description = "Agentic triage-desk assistant: SATS-cited priority proposals over MCP, open-weights model, nurse-in-the-loop."
+readme = "README.md"
+license = "Apache-2.0"
+authors = [
+    { name = "MediQuest by AlgoCracked", email = "aladroslab@gmail.com" }
+]
+requires-python = ">=3.12"
+dependencies = [
+    "langchain-core>=1.6.10",
+    "langchain-mcp-adapters>=0.3.2",
+    "langchain-ollama>=1.1.0",
+    "langgraph>=1.2.14",
+    "mcp[cli]>=1.30.0",
+    "pyyaml>=6.0.3",
+]
+
+[project.scripts]
+triage-desk = "mediquest_triage_desk:main"
+
+[build-system]
+requires = ["uv_build>=0.11.28,<0.12.0"]
+build-backend = "uv_build"
+
+[dependency-groups]
+dev = [
+    "pytest>=9.1.1",
+]

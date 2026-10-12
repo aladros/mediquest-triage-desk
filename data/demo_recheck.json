@@ -1,0 +1,4 @@
+{"patient_id": "OPD-0413",
+ "note": "45 minutes later the refill patient reports feeling faint; the nurse repeats the vitals.",
+ "vitals": {"respiratory_rate": 24, "heart_rate": 118, "systolic_bp": 92, "temperature_c": 36.7,
+            "avpu": "alert", "mobility": "with_help", "trauma": false}}
