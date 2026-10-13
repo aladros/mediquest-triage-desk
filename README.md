@@ -36,6 +36,13 @@ Kaggle with GPU T4 + Internet on and *Run All*. The nurse's decision is its own 
 visible. `kaggle/push.sh` runs the full eval set on a Kaggle GPU and is how EVALS.md was produced.
 Audit log: `var/audit.jsonl`. State: `var/triage.db`. Delete `var/` to start a fresh morning.
 
+## Who it is for
+
+- **Triage nurses** at the adult triage desk of busy public outpatient departments, starting in Kenya: the agent
+  gives them a cited SATS priority in seconds and never acts without their decision.
+- **Patients waiting in that queue**, who are the people at risk when an urgent case sits unflagged.
+- **Facility leads** who need an audit trail of who set each priority, when and why.
+
 ## What it does
 
 1. **Score vitals** — `compute_tews` turns RR, HR, systolic BP, temperature, AVPU, mobility and trauma into the SATS
@@ -83,6 +90,14 @@ discriminator has an id; every proposed colour cites the ids it came from.
   a desk.
 - Single desk, single machine; no EMR integration, no auth on the CLI (the name typed is the name recorded).
 - Discriminators that depend on a measurement (glucose, burn %) rely on the nurse writing the number in the complaint.
+
+## Next steps
+
+1. Review with practising triage nurses (not done yet) and verify `sats_adult.yaml` against the official EMSSA chart.
+2. Kiswahili/Sheng complaints: translate-then-match while quoting the original words, or a multilingual open-weights
+   model (e.g. Aya) for extraction only; add a nurse-written Kiswahili eval set.
+3. A second, independent check that each quote actually *supports* its discriminator (not just that it exists).
+4. Paediatric SATS charts; a simple tablet UI for the desk; EMR/FHIR hand-off of confirmed priorities.
 
 ## Licence
 
