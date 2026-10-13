@@ -7,7 +7,7 @@ A named nurse confirms, overrides or rejects it. Nothing moves in the queue with
 Built for the *African Agentic AI Design Challenge* — Healthcare track, "The Triage Desk",
 theme **Symptom-based priority scoring**. Synthetic patients only. Not a medical device; not for clinical use.
 
-**Demo video (2:25, unedited run on a Kaggle T4):** https://youtu.be/OA1ANP1XMCg
+**Demo video (2:25, unedited run on a Kaggle T4, narrated):** https://youtu.be/GpeM8qaBvJo
 
 ## Run it (one command)
 
