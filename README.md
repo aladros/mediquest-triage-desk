@@ -80,7 +80,7 @@ discriminator has an id; every proposed colour cites the ids it came from.
 - **Kiswahili complaints are missed** by the 7B model (unfixed — see EVALS.md), and a verbatim quote can still be
   irrelevant to the discriminator it is attached to; the nurse reading the citation is the check.
 - **Not yet reviewed by a triage nurse.** The workflow is modelled on the published SATS process, not on time spent at
-  a desk. <!-- NURSE-INPUT: replace this bullet with a 'Clinical input' section once Peter has spoken to a triage nurse. -->
+  a desk.
 - Single desk, single machine; no EMR integration, no auth on the CLI (the name typed is the name recorded).
 - Discriminators that depend on a measurement (glucose, burn %) rely on the nurse writing the number in the complaint.
 
