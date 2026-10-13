@@ -1,6 +1,8 @@
 # Architecture
 
-One page. The agent proposes a cited SATS priority; a named nurse decides. Nothing reaches the queue without her.
+One page. The agent proposes a cited SATS priority; a named nurse decides. Nothing reaches the queue without the nurse's decision.
+
+![Architecture diagram](docs/architecture.png)
 
 ```
  nurse types: age, complaint, vitals

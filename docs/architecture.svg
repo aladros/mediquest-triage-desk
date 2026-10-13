@@ -1,0 +1,110 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="1000" viewBox="0 0 1600 1000" font-family="Helvetica, Arial, sans-serif">
+  <defs>
+    <marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#334155"/>
+    </marker>
+    <marker id="g" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#b45309"/>
+    </marker>
+  </defs>
+  <rect width="1600" height="1000" fill="#ffffff"/>
+  <text x="40" y="52" font-size="30" font-weight="700" fill="#0f172a">MediQuest Triage Desk — architecture</text>
+  <text x="40" y="84" font-size="17" fill="#475569">The agent proposes a cited SATS priority; a named nurse decides. Synthetic patients only. github.com/aladros/mediquest-triage-desk</text>
+
+  <!-- Nurse -->
+  <rect x="40" y="140" width="250" height="150" rx="14" fill="#fef3c7" stroke="#b45309" stroke-width="2.5"/>
+  <text x="165" y="178" font-size="20" font-weight="700" text-anchor="middle" fill="#7c2d12">Triage nurse</text>
+  <text x="165" y="206" font-size="15" text-anchor="middle" fill="#7c2d12">types age, complaint,</text>
+  <text x="165" y="226" font-size="15" text-anchor="middle" fill="#7c2d12">7 vital signs</text>
+  <text x="165" y="258" font-size="15" text-anchor="middle" fill="#7c2d12">decides: confirm /</text>
+  <text x="165" y="278" font-size="15" text-anchor="middle" fill="#7c2d12">override + reason / reject</text>
+
+  <!-- LangGraph container -->
+  <rect x="340" y="120" width="1220" height="330" rx="16" fill="#f1f5f9" stroke="#64748b" stroke-width="2" stroke-dasharray="8 6"/>
+  <text x="360" y="150" font-size="18" font-weight="700" fill="#0f172a">Agent — LangGraph StateGraph (open-source orchestration)</text>
+
+  <!-- nodes -->
+  <g font-size="16" text-anchor="middle" fill="#0f172a">
+    <rect x="370" y="180" width="140" height="64" rx="10" fill="#fff" stroke="#334155" stroke-width="2"/>
+    <text x="440" y="218">intake</text>
+    <rect x="550" y="180" width="160" height="64" rx="10" fill="#fff" stroke="#334155" stroke-width="2"/>
+    <text x="630" y="208">score_vitals</text><text x="630" y="230" font-size="13" fill="#475569">compute_tews</text>
+    <rect x="750" y="180" width="190" height="64" rx="10" fill="#e0f2fe" stroke="#0369a1" stroke-width="2"/>
+    <text x="845" y="208">extract</text><text x="845" y="230" font-size="13" fill="#0369a1">model tool loop ≤3 turns</text>
+    <rect x="980" y="180" width="160" height="64" rx="10" fill="#fff" stroke="#334155" stroke-width="2"/>
+    <text x="1060" y="208">propose</text><text x="1060" y="230" font-size="13" fill="#475569">PENDING, cited</text>
+    <rect x="1180" y="172" width="150" height="80" rx="10" fill="#fde68a" stroke="#b45309" stroke-width="3"/>
+    <text x="1255" y="204" font-weight="700" fill="#7c2d12">GATE</text><text x="1255" y="226" font-size="13" fill="#7c2d12">interrupt()</text><text x="1255" y="243" font-size="13" fill="#7c2d12">named nurse</text>
+    <rect x="1370" y="180" width="160" height="64" rx="10" fill="#fff" stroke="#334155" stroke-width="2"/>
+    <text x="1450" y="208">commit</text><text x="1450" y="230" font-size="13" fill="#475569">only path to queue</text>
+    <!-- branches -->
+    <rect x="370" y="330" width="170" height="60" rx="10" fill="#fff" stroke="#94a3b8" stroke-width="2"/>
+    <text x="455" y="356">handoff</text><text x="455" y="377" font-size="13" fill="#475569">under 13 → nurse</text>
+    <rect x="980" y="330" width="170" height="60" rx="10" fill="#fff" stroke="#94a3b8" stroke-width="2"/>
+    <text x="1065" y="356">needs_vitals</text><text x="1065" y="377" font-size="13" fill="#475569">no colour, measure X</text>
+    <rect x="1180" y="330" width="350" height="60" rx="10" fill="#fff" stroke="#94a3b8" stroke-width="2"/>
+    <text x="1355" y="356">re-check (flag_recheck)</text><text x="1355" y="377" font-size="13" fill="#475569">worse vitals → pending flag → same gate</text>
+  </g>
+  <g stroke="#334155" stroke-width="2.2" fill="none" marker-end="url(#a)">
+    <line x1="510" y1="212" x2="548" y2="212"/>
+    <line x1="710" y1="212" x2="748" y2="212"/>
+    <line x1="940" y1="212" x2="978" y2="212"/>
+    <line x1="1140" y1="212" x2="1178" y2="212"/>
+    <line x1="1330" y1="212" x2="1368" y2="212"/>
+    <line x1="440" y1="244" x2="440" y2="328"/>
+    <line x1="1060" y1="244" x2="1060" y2="328"/>
+  </g>
+  <!-- nurse arrows -->
+  <g stroke="#b45309" stroke-width="2.5" fill="none" marker-end="url(#g)">
+    <path d="M290 190 C 320 190, 330 212, 368 212"/>
+    <path d="M1255 172 C 1255 110, 300 100, 230 138"/>
+  </g>
+  <text x="760" y="104" font-size="15" fill="#b45309" text-anchor="middle">proposal + citations shown; graph paused until the nurse decides</text>
+
+  <!-- Model -->
+  <rect x="700" y="510" width="290" height="120" rx="14" fill="#e0f2fe" stroke="#0369a1" stroke-width="2.5"/>
+  <text x="845" y="546" font-size="19" font-weight="700" text-anchor="middle" fill="#0c4a6e">Open-weights LLM</text>
+  <text x="845" y="572" font-size="15" text-anchor="middle" fill="#0c4a6e">Qwen 2.5 7B via Ollama</text>
+  <text x="845" y="594" font-size="15" text-anchor="middle" fill="#0c4a6e">on the facility's machine (our runs: T4)</text>
+  <text x="845" y="616" font-size="13" text-anchor="middle" fill="#0369a1">only job: pick discriminators + quote verbatim</text>
+  <line x1="845" y1="244" x2="845" y2="508" stroke="#0369a1" stroke-width="2.2" marker-end="url(#a)" marker-start="url(#a)"/>
+
+  <!-- MCP servers -->
+  <rect x="40" y="690" width="900" height="270" rx="16" fill="#ecfdf5" stroke="#047857" stroke-width="2.5"/>
+  <text x="60" y="724" font-size="20" font-weight="700" fill="#064e3b">MCP server: triage-desk (BUILT — FastMCP, stdio)</text>
+  <g font-size="15" fill="#064e3b">
+    <text x="60" y="760">• list_discriminators — read: closed SATS list</text>
+    <text x="60" y="788">• compute_tews — score vitals, each point cites its chart row</text>
+    <text x="60" y="816">• match_discriminators — quote must be verbatim; rejections name the closest real words</text>
+    <text x="60" y="844">• propose_priority — ACT: re-validates server-side, writes PENDING proposal</text>
+    <text x="60" y="872">• flag_recheck — ACT: pending deterioration flag, never moves a patient</text>
+    <text x="60" y="900">• commit_priority — ACT: named nurse's decision; gate-only, never given to the model</text>
+    <text x="60" y="928">• get_queue — read: queue ordered by nurse-confirmed priority only</text>
+  </g>
+  <rect x="980" y="690" width="280" height="130" rx="16" fill="#f5f3ff" stroke="#6d28d9" stroke-width="2.5"/>
+  <text x="1000" y="724" font-size="19" font-weight="700" fill="#4c1d95">MCP server: time</text>
+  <text x="1000" y="750" font-size="15" fill="#4c1d95">(BORROWED — official</text>
+  <text x="1000" y="772" font-size="15" fill="#4c1d95">mcp-server-time, uvx)</text>
+  <text x="1000" y="800" font-size="15" fill="#4c1d95">facility-local clock → see-by time</text>
+
+  <!-- storage -->
+  <rect x="1300" y="690" width="260" height="130" rx="16" fill="#fff7ed" stroke="#c2410c" stroke-width="2.5"/>
+  <text x="1320" y="724" font-size="19" font-weight="700" fill="#7c2d12">State + audit</text>
+  <text x="1320" y="752" font-size="15" fill="#7c2d12">SQLite: patients,</text>
+  <text x="1320" y="774" font-size="15" fill="#7c2d12">proposals, decisions</text>
+  <text x="1320" y="802" font-size="15" fill="#7c2d12">audit.jsonl: every call</text>
+  <rect x="980" y="850" width="580" height="110" rx="16" fill="#f8fafc" stroke="#64748b" stroke-width="2"/>
+  <text x="1000" y="884" font-size="18" font-weight="700" fill="#0f172a">Data source</text>
+  <text x="1000" y="910" font-size="15" fill="#334155">SATS adult chart (EMSSA 2012) as cited YAML: TEWS bands +</text>
+  <text x="1000" y="932" font-size="15" fill="#334155">clinical discriminators. Synthetic patients only.</text>
+
+  <!-- connections to servers -->
+  <g stroke="#047857" stroke-width="2.2" fill="none" marker-end="url(#a)">
+    <path d="M630 244 L 630 470 L 400 470 L 400 688"/>
+    <path d="M1000 244 L 1000 300 L 960 300 L 960 470 L 700 470 L 700 688"/>
+    <path d="M1530 212 L 1548 212 L 1548 480 L 860 480 L 860 688"/>
+  </g>
+  <path d="M1548 480 L 1548 495 L 1120 495 L 1120 688" stroke="#6d28d9" stroke-width="2.2" fill="none" marker-end="url(#a)"/>
+  <path d="M940 705 L 962 705 L 962 668 L 1430 668 L 1430 688" stroke="#c2410c" stroke-width="2.2" fill="none" marker-end="url(#a)"/>
+  <text x="410" y="520" font-size="14" fill="#047857">MCP stdio (official client)</text><text x="1300" y="660" font-size="13" fill="#c2410c">every tool call logged</text>
+</svg>
