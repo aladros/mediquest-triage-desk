@@ -25,8 +25,11 @@ confirm / override / reject each proposal. Every MCP tool call prints on screen 
 ./run.sh recheck          # 45 min later: repeat vitals on a waiting patient -> deterioration flag -> your decision
 ./run.sh queue            # the queue, ordered only by nurse-confirmed priorities
 ./run.sh eval --runs 3    # the eval set (see EVALS.md)
-uv run pytest             # deterministic scorer tests (no model needed)
+uv run pytest             # 19 tests: SATS scorer + gate/safety rules (no model needed)
 ```
+
+Fresh-clone check: [`kaggle/smoke_fresh_clone.py`](kaggle/smoke_fresh_clone.py) clones this public repo on a clean Kaggle
+T4, installs only uv + Ollama, and runs `./run.sh demo`, `recheck` and `queue` end to end (last passed 2026-10-13).
 
 Swap the model with `TRIAGE_MODEL=qwen2.5:3b ./run.sh` (any Ollama model with tool calling). A GPU makes it seconds per
 patient; CPU-only works but is slow.
